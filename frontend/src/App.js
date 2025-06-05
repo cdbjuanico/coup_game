@@ -1,23 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Lobby from "./components/Lobby";
+import GameBoard from "./components/GameBoard";
 
 function App() {
+  const [game, setGame] = useState(null);
+  const [playerId, setPlayerId] = useState(null);
+
+  // onGameCreated and onJoinGame callbacks simply set the game state.
+  const handleGameCreated = (newGame) => {
+    setGame(newGame);
+    // Determine playerId from newGame.players (e.g., last inserted)
+    setPlayerId(newGame.players[newGame.players.length - 1]._id);
+  };
+
+  const handleJoinGame = (joinedGame) => {
+    setGame(joinedGame);
+    setPlayerId(joinedGame.players[joinedGame.players.length - 1]._id);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {!game ? (
+        <Lobby onGameCreated={handleGameCreated} onJoinGame={handleJoinGame} />
+      ) : (
+        <GameBoard game={game} playerId={playerId} />
+      )}
     </div>
   );
 }
